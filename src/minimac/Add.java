@@ -11,10 +11,13 @@ public class Add implements Instruction {
         this.dest = dest;
     }
 
+    public String toString() {
+        return "Add " + num1 + " " + num2 + " " + dest;
+    }
+
     @Override
     public void execute(MiniMac mac) {
-        Integer[] memory = mac.getMemory();
-        memory[dest] = memory[num1] + memory[num2];
+        mac.memory[dest] = mac.memory[num1] + mac.memory[num2];
         mac.notifySubscribers();
     }
 }

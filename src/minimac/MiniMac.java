@@ -1,10 +1,11 @@
 package minimac;
-
 import tools.Publisher;
-
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Scanner;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class MiniMac extends Publisher implements Serializable {
     int size = 32;
@@ -12,49 +13,51 @@ public class MiniMac extends Publisher implements Serializable {
     boolean halt = false;
     int ip = 0;
 
+//    Constructor
     public MiniMac() {
         clear();
     }
 
+//    Execute list of instructions
+    public void execute(List<Instruction> instructions) {
+        while (ip < instructions.size() && !halt) {
+            Instruction next = instructions.get(ip++);
+            next.execute(this);
+        }
+    }
+
+//    Clear memory
     public void clear() {
         Arrays.fill(memory, 0);
         notifySubscribers();
     }
 
-//    public void execute() {
-//
-//    }
-
-    public Integer[] getMemory() {
-        return memory;
-    }
-
-    public void halt(boolean halt) {
-        this.halt = halt;
+    public void printMemory() {
+        for (int i = 0; i < memory.length; i++) {
+            System.out.println("memory[" + i + "] = " + memory[i]);
+        }
     }
 
     public static void main(String[] args) {
         MiniMac mac = new MiniMac();
-        Integer[] memory = mac.getMemory();
+        List<Instruction> instructions;
+        String programString;
+        Scanner scanner = new Scanner(System.in);
 
-        Load load5 = new Load(0, 5);
-        load5.execute(mac);
-        System.out.println("loading 5 to location 0: " + memory[0]);
+//        System.out.println("Enter the name of the file containing the program: ");
+//        String fileName = scanner.nextLine();
 
-        Load load10 = new Load(1, 10);
-        load10.execute(mac);
-        System.out.println("loading 10 to location 1: " + memory[1]);
+        String fileName = "fib";
+        try {
+            programString = Files.readString(Path.of(fileName));
+            instructions = MiniMacParser.parse(programString);
+        } catch (Exception e) {
+            System.out.println("Parsing error: " + e.getMessage());
+            return;
+        }
 
-        Add add = new Add(0, 1, 2);
-        add.execute(mac);
-        System.out.println("testing addition of 5 + 10: " + memory[2]);
-
-        Multiply multiply = new Multiply(0, 1, 3);
-        multiply.execute(mac);
-        System.out.println("testing multiplication of 5 * 10: " + memory[3]);
-
-        Halt halt = new Halt();
-        halt.execute(mac);
+        mac.execute(instructions);
+        mac.printMemory();
     }
 }
 

@@ -32,12 +32,16 @@ public class MiniMacParser extends ParserUtils {
         if (opcode.equalsIgnoreCase("add")) return parseAdd(it);
         if (opcode.equalsIgnoreCase("mul")) return parseMul(it);
         if (opcode.equalsIgnoreCase("load")) return parseLoad(it);
-//        if (opcode.equalsIgnoreCase("loop")) return parseLoop(it);
-//        if (opcode.equalsIgnoreCase("Bgt")) return parseBgt(it);
-//        if (opcode.equalsIgnoreCase("Blt")) return parseBlt(it);
+        if (opcode.equalsIgnoreCase("loop")) return parseLoop(it);
+        if (opcode.equalsIgnoreCase("Bgt")) return parseBgt(it);
+        if (opcode.equalsIgnoreCase("Blt")) return parseBlt(it);
 //        if (opcode.equalsIgnoreCase("{")) return parseBlock(it);
         if (opcode.equalsIgnoreCase("}")) return null; // used to indicate the end of a block
         throw new Exception("Parsing error, unrecognized operator: " + opcode);
+    }
+
+    static protected Halt parseHalt() {
+        return new Halt();
     }
 
     static protected Add parseAdd(Iterator<String> it) throws Exception {
@@ -57,12 +61,25 @@ public class MiniMacParser extends ParserUtils {
     static protected Load parseLoad(Iterator<String> it) throws Exception {
         int location = parseInteger(it);
         int value = parseInteger(it);
-        return new Load(value, location);
+        return new Load(location, value);
     }
 
-    static protected Halt parseHalt() {
-        return new Halt();
+    static protected Loop parseLoop(Iterator<String> it) throws Exception {
+        int count = parseInteger(it);
+        Instruction instruction = parseNext(it);
+        return new Loop(count, instruction);
     }
-    // etc.
+
+    static protected Bgt parseBgt(Iterator<String> it) throws Exception {
+        int location = parseInteger(it);
+        int offset = parseInteger(it);
+        return new Bgt(location, offset);
+    }
+
+    static protected Blt parseBlt(Iterator<String> it) throws Exception {
+        int location = parseInteger(it);
+        int offset = parseInteger(it);
+        return new Blt(location, offset);
+    }
 
 }
