@@ -62,7 +62,8 @@ public class AppPanel extends JPanel implements ActionListener {
                         try {
                             String programString = Files.readString(Path.of(fileName.trim()));
                             instructions = MiniMacParser.parse(programString);
-                            view.update(mac, instructions);
+                            view.updateInstructions(instructions);
+                            view.update();
                         } catch (java.nio.file.NoSuchFileException err) {
                             JOptionPane.showMessageDialog(this, "Program " + fileName + " doesn't exist", "Error", JOptionPane.ERROR_MESSAGE);
                         } catch (IOException err) {
@@ -78,7 +79,8 @@ public class AppPanel extends JPanel implements ActionListener {
                 case "Run":
                     if (instructions != null) {
                         mac.execute(instructions);
-                        view.update(mac, instructions);
+                        view.updateInstructions(instructions);
+                        view.update();
                     } else {
                         System.out.println("No instructions to run.");
                     }
@@ -86,7 +88,8 @@ public class AppPanel extends JPanel implements ActionListener {
                 case "Clear":
                     mac.clear();
                     instructions.clear();
-                    view.update(mac, instructions);
+                    view.updateInstructions(instructions);
+                    view.update();
                     break;
                 default: {
                     throw new Exception("Unrecognized command: " + cmmd);

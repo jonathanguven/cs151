@@ -26,6 +26,7 @@ public class MiniMac extends Publisher implements Serializable {
         }
         ip = 0;
         halt = false;
+        notifySubscribers();
     }
 
 //    Clear memory
