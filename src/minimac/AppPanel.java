@@ -63,7 +63,6 @@ public class AppPanel extends JPanel implements ActionListener {
                             String programString = Files.readString(Path.of(fileName.trim()));
                             instructions = MiniMacParser.parse(programString);
                             view.updateInstructions(instructions);
-                            view.update();
                         } catch (java.nio.file.NoSuchFileException err) {
                             JOptionPane.showMessageDialog(this, "Program " + fileName + " doesn't exist", "Error", JOptionPane.ERROR_MESSAGE);
                         } catch (IOException err) {
@@ -79,7 +78,6 @@ public class AppPanel extends JPanel implements ActionListener {
                 case "Run":
                     if (instructions != null) {
                         mac.execute(instructions);
-                        view.updateInstructions(instructions);
                         view.update();
                     } else {
                         System.out.println("No instructions to run.");
