@@ -32,16 +32,11 @@ public class MiniMacComponent extends JComponent {
         }
     }
 
-    public void updateInstructionModel(List<Instruction> instructions) {
+    public void updateInstructions(List<Instruction> instructions) {
         instructionModel.clear();
         if (instructions == null) return;
         for (Instruction instr : instructions) {
             instructionModel.addElement(instr.toString());
         }
-    }
-
-    public void update(MiniMac mac, List<Instruction> instructions) {
-        updateMemory(mac.memory);
-        updateInstructionModel(instructions);
     }
 }

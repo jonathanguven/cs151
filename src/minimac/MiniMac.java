@@ -24,10 +24,14 @@ public class MiniMac extends Publisher implements Serializable {
             Instruction next = instructions.get(ip++);
             next.execute(this);
         }
+        ip = 0;
+        halt = false;
     }
 
 //    Clear memory
     public void clear() {
+        halt = false;
+        ip = 0;
         Arrays.fill(memory, 0);
         notifySubscribers();
     }

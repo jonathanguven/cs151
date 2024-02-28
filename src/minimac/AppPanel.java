@@ -13,6 +13,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -53,20 +54,27 @@ public class AppPanel extends JPanel implements ActionListener {
 
     public void actionPerformed(ActionEvent e) {
         String cmmd = e.getActionCommand();
-        System.out.println("cmmd = " + cmmd);
-
         try {
             switch (cmmd) {
                 case "Parse":
                     String fileName = JOptionPane.showInputDialog(this, "Enter program file name", "Input", JOptionPane.QUESTION_MESSAGE);
                     if (fileName != null && !fileName.trim().isEmpty()) {
-                        String programString = Files.readString(Path.of(fileName));
-                        instructions = MiniMacParser.parse(programString);
-                        view.update(mac, instructions);
+                        try {
+                            String programString = Files.readString(Path.of(fileName.trim()));
+                            instructions = MiniMacParser.parse(programString);
+                            view.update(mac, instructions);
+                        } catch (java.nio.file.NoSuchFileException err) {
+                            JOptionPane.showMessageDialog(this, "Program " + fileName + " doesn't exist", "Error", JOptionPane.ERROR_MESSAGE);
+                        } catch (IOException err) {
+                            JOptionPane.showMessageDialog(this, "An error occurred while reading the file: " + err.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                        } catch (Exception err) {
+                            JOptionPane.showMessageDialog(this, "An error occurred: " + err.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                        }
                     } else {
-                        System.out.println("No file name entered or operation cancelled.");
+                        JOptionPane.showMessageDialog(this, "No file name entered or operation cancelled.", "Info", JOptionPane.INFORMATION_MESSAGE);
                     }
                     break;
+
                 case "Run":
                     if (instructions != null) {
                         mac.execute(instructions);
@@ -77,7 +85,7 @@ public class AppPanel extends JPanel implements ActionListener {
                     break;
                 case "Clear":
                     mac.clear();
-                    instructions = null;
+                    instructions.clear();
                     view.update(mac, instructions);
                     break;
                 default: {

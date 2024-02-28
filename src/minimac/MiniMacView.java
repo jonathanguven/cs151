@@ -14,6 +14,7 @@ public class MiniMacView extends JPanel {
     }
 
     public void update(MiniMac mac, List<Instruction> instructions) {
-        component.update(mac, instructions);
+        component.updateMemory(mac.memory);
+        component.updateInstructions(instructions);
     }
 }
