@@ -18,6 +18,7 @@ public class Blt implements Instruction {
         if (location >= 0 && location < mac.size) {
             if (mac.memory[location] < 0) {
                 mac.ip += offset;
+                mac.notifySubscribers();
             }
         } else {
             throw new IndexOutOfBoundsException("Invalid memory access at location " + location);

@@ -47,7 +47,7 @@ public class MiniMac extends Publisher implements Serializable {
 //        System.out.println("Enter the name of the file containing the program: ");
 //        String fileName = scanner.nextLine();
 
-        String fileName = "fib";
+        String fileName = "less";
         try {
             programString = Files.readString(Path.of(fileName));
             instructions = MiniMacParser.parse(programString);

@@ -8,5 +8,6 @@ public class Halt implements Instruction {
     @Override
     public void execute(MiniMac mac) {
         mac.halt = true;
+        mac.notifySubscribers();
     }
 }
