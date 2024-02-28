@@ -37,7 +37,7 @@ public class AppPanel extends JPanel implements ActionListener {
         cp.add(this);
         frame.setJMenuBar(this.createMenuBar());
         frame.setTitle("MiniMac");
-        frame.setSize(500, 300);
+        frame.setSize(800, 480);
         frame.setVisible(true);
     }
 
