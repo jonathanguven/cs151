@@ -78,7 +78,6 @@ public class AppPanel extends JPanel implements ActionListener {
                 case "Run":
                     if (instructions != null) {
                         mac.execute(instructions);
-                        view.update();
                     } else {
                         System.out.println("No instructions to run.");
                     }
@@ -87,7 +86,6 @@ public class AppPanel extends JPanel implements ActionListener {
                     mac.clear();
                     instructions.clear();
                     view.updateInstructions(instructions);
-                    view.update();
                     break;
                 default: {
                     throw new Exception("Unrecognized command: " + cmmd);
