@@ -17,7 +17,6 @@ public class Load implements Instruction {
     public void execute(MiniMac mac) {
         if (location >= 0 && location < mac.size) {
             mac.memory[location] = value;
-            mac.notifySubscribers();
         } else {
             throw new IndexOutOfBoundsException("Invalid memory access at location " + location);
         }

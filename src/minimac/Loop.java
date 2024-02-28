@@ -18,6 +18,5 @@ public class Loop implements Instruction {
         for (int i = 0; i < count; i++) {
             instruction.execute(mac);
         }
-        mac.notifySubscribers();
     }
 }

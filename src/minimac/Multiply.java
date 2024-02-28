@@ -18,6 +18,5 @@ public class Multiply implements Instruction {
     @Override
     public void execute(MiniMac mac) {
         mac.memory[dest] = mac.memory[num1] * mac.memory[num2];
-        mac.notifySubscribers();
     }
 }
