@@ -45,7 +45,7 @@ public class AppPanel extends JPanel implements ActionListener {
         JMenuBar result = new JMenuBar();
         JMenu fileMenu = Utilities.makeMenu("File", new String[]{"New", "Save", "Open", "Quit"}, this);
         result.add(fileMenu);
-        JMenu editMenu = Utilities.makeMenu("Edit", new String[]{"Change"}, this);
+        JMenu editMenu = Utilities.makeMenu("Edit", new String[]{"Parse", "Run", "Clear"}, this);
         result.add(editMenu);
         JMenu helpMenu = Utilities.makeMenu("Help", new String[]{"About", "Help"}, this);
         result.add(helpMenu);
@@ -56,7 +56,7 @@ public class AppPanel extends JPanel implements ActionListener {
         String cmmd = e.getActionCommand();
         try {
             switch (cmmd) {
-                case "Parse":
+                case "Parse": {
                     String fileName = JOptionPane.showInputDialog(this, "Enter program file name", "Input", JOptionPane.QUESTION_MESSAGE);
                     if (fileName != null && !fileName.trim().isEmpty()) {
                         try {
@@ -74,19 +74,76 @@ public class AppPanel extends JPanel implements ActionListener {
                         JOptionPane.showMessageDialog(this, "No file name entered or operation cancelled.", "Info", JOptionPane.INFORMATION_MESSAGE);
                     }
                     break;
+                }
 
-                case "Run":
+                case "Run": {
                     if (instructions != null) {
                         mac.execute(instructions);
                     } else {
                         System.out.println("No instructions to run.");
                     }
                     break;
-                case "Clear":
+                }
+
+                case "Clear": {
                     mac.clear();
                     instructions.clear();
                     view.updateInstructions(instructions);
                     break;
+                }
+
+                case "About": {
+                    Utilities.inform("""
+                            MiniMac is a virtual processor with a tiny but extendable memory and a tiny but extendable instruction set.\s
+                            Made by Jonathan Nguyen.\s
+                            CS 151 Section 4""");
+                    break;
+                }
+
+                case "Help": {
+                    String[] cmmds = new String[]{
+                            "Parse: Parses a file of the inputted program name",
+                            "Run: Runs the parsed program",
+                            "Clear: Clears the memory and instructions",
+                    };
+                    Utilities.inform(cmmds);
+                    break;
+                }
+
+                case "New": {
+                    mac = new MiniMac();
+                    view = new MiniMacView(mac);
+                    instructions = null;
+                    this.removeAll();
+                    this.add(controls);
+                    this.add(view);
+                    this.revalidate();
+                    this.repaint();
+                    break;
+                }
+
+                case "Save": {
+                    String fName = Utilities.getFileName((String) null, false);
+                    ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(fName));
+                    os.writeObject(this.mac);
+                    os.close();
+                    break;
+                }
+
+                case "Open": {
+                    String fName = Utilities.getFileName((String) null, true);
+                    ObjectInputStream is = new ObjectInputStream(new FileInputStream(fName));
+                    MiniMac newMac = (MiniMac) is.readObject();
+                    is.close();
+                    view.setMac(newMac);
+                    break;
+                }
+
+                case "Quit": {
+                    System.exit(0);
+                    break;
+                }
+
                 default: {
                     throw new Exception("Unrecognized command: " + cmmd);
                 }
