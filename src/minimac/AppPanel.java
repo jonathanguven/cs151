@@ -1,11 +1,8 @@
 package minimac;
 
-import stoplightSim.Stoplight;
 import tools.*;
-import java.util.List;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
