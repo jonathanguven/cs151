@@ -1,5 +1,6 @@
 package minimac;
 
+import stoplightSim.Stoplight;
 import tools.*;
 
 import javax.swing.*;
@@ -119,14 +120,23 @@ public class AppPanel extends JPanel implements ActionListener {
                 }
 
                 case "Save": {
-                    save(mac, true);
+                    String fName = Utilities.getFileName((String) null, false);
+                    ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(fName));
+                    os.writeObject(this.mac);
+                    os.close();
                     break;
                 }
 
                 case "Open": {
-                    mac = open(mac);
-                    view.setMac(mac, mac.instructions);
+                    if (Utilities.confirm("Are you sure? Unsaved changes will be lost!")) {
+                        String fName = Utilities.getFileName((String) null, true);
+                        ObjectInputStream is = new ObjectInputStream(new FileInputStream(fName));
+                        mac = (MiniMac) is.readObject();
+                        view.setMac(mac, mac.instructions);
+                        is.close();
+                    }
                     break;
+
                 }
 
                 case "Quit": {
@@ -144,40 +154,6 @@ public class AppPanel extends JPanel implements ActionListener {
         }
     }
 
-    public static void save(MiniMac model, Boolean saveAs) {
-        String fName = model.getFileName();
-        if (fName == null || saveAs) {
-            fName = getFileName(fName, false);
-            model.setFileName(fName);
-        }
-        try {
-            ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(fName));
-            model.setUnsavedChanges(false);
-            os.writeObject(model);
-            os.close();
-        } catch (Exception err) {
-            model.setUnsavedChanges(true);
-            Utilities.error(err);
-        }
-    }
-
-    public static MiniMac open(MiniMac model) {
-//        saveChanges(model);
-        String fName = getFileName(model.getFileName(), true);
-        MiniMac newModel = null;
-        try {
-            ObjectInputStream is = new ObjectInputStream(new FileInputStream(fName));
-            newModel = (MiniMac)is.readObject();
-            is.close();
-        } catch (Exception err) {
-            Utilities.error(err);
-        }
-        return newModel;
-    }
-
-    private static void saveChanges(MiniMac model) {
-        save(model, false);
-    }
 
     class ControlPanel extends JPanel {
         public ControlPanel() {
