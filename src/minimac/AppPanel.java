@@ -19,7 +19,6 @@ import java.nio.file.Path;
 
 public class AppPanel extends JPanel implements ActionListener {
     private MiniMac mac;
-    private List<Instruction> instructions;
     private ControlPanel controls;
     private MiniMacView view;
 
@@ -61,8 +60,8 @@ public class AppPanel extends JPanel implements ActionListener {
                     if (fileName != null && !fileName.trim().isEmpty()) {
                         try {
                             String programString = Files.readString(Path.of(fileName.trim()));
-                            instructions = MiniMacParser.parse(programString);
-                            view.updateInstructions(instructions);
+                            mac.instructions = MiniMacParser.parse(programString);
+                            view.update();
                         } catch (java.nio.file.NoSuchFileException err) {
                             JOptionPane.showMessageDialog(this, "Program " + fileName + " doesn't exist", "Error", JOptionPane.ERROR_MESSAGE);
                         } catch (IOException err) {
@@ -77,8 +76,8 @@ public class AppPanel extends JPanel implements ActionListener {
                 }
 
                 case "Run": {
-                    if (instructions != null) {
-                        mac.execute(instructions);
+                    if (mac.instructions != null) {
+                        mac.execute();
                     } else {
                         System.out.println("No instructions to run.");
                     }
@@ -87,16 +86,12 @@ public class AppPanel extends JPanel implements ActionListener {
 
                 case "Clear": {
                     mac.clear();
-                    instructions.clear();
-                    view.updateInstructions(instructions);
+                    view.update();
                     break;
                 }
 
                 case "About": {
-                    Utilities.inform("""
-                            MiniMac is a virtual processor with a tiny but extendable memory and a tiny but extendable instruction set.\s
-                            Made by Jonathan Nguyen.\s
-                            CS 151 Section 4""");
+                    Utilities.inform("MiniMac is a virtual processor with a tiny but extendable memory and a tiny but extendable instruction set.\nMade by Jonathan Nguyen.\nCS 151 Section 4");
                     break;
                 }
 
@@ -113,7 +108,6 @@ public class AppPanel extends JPanel implements ActionListener {
                 case "New": {
                     mac = new MiniMac();
                     view = new MiniMacView(mac);
-                    instructions = null;
                     this.removeAll();
                     this.add(controls);
                     this.add(view);

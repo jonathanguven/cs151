@@ -18,9 +18,6 @@ public class MiniMacView extends JPanel implements Subscriber {
         add(component, BorderLayout.CENTER);
     }
 
-    public void updateInstructions(List<Instruction> instructions) {
-        component.updateInstructions(instructions);
-    }
 
     public void setMac(MiniMac newMac) {
         mac.unsubscribe(this);
@@ -31,6 +28,6 @@ public class MiniMacView extends JPanel implements Subscriber {
 
     @Override
     public void update() {
-        component.updateMemory(mac.memory);
+        component.updateLists(mac);
     }
 }

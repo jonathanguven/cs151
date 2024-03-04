@@ -12,6 +12,7 @@ public class MiniMac extends Publisher implements Serializable {
     Integer[] memory = new Integer[size];
     boolean halt = false;
     int ip = 0;
+    List<Instruction> instructions;
 
 //    Constructor
     public MiniMac() {
@@ -19,7 +20,7 @@ public class MiniMac extends Publisher implements Serializable {
     }
 
 //    Execute list of instructions
-    public void execute(List<Instruction> instructions) {
+    public void execute() {
         while (ip < instructions.size() && !halt) {
             Instruction next = instructions.get(ip++);
             next.execute(this);
@@ -34,35 +35,8 @@ public class MiniMac extends Publisher implements Serializable {
         halt = false;
         ip = 0;
         Arrays.fill(memory, 0);
+        instructions = null;
         notifySubscribers();
-    }
-
-    public void printMemory() {
-        for (int i = 0; i < memory.length; i++) {
-            System.out.println("memory[" + i + "] = " + memory[i]);
-        }
-    }
-
-    public static void main(String[] args) {
-        MiniMac mac = new MiniMac();
-        List<Instruction> instructions;
-        String programString;
-        Scanner scanner = new Scanner(System.in);
-
-//        System.out.println("Enter the name of the file containing the program: ");
-//        String fileName = scanner.nextLine();
-
-        String fileName = "less";
-        try {
-            programString = Files.readString(Path.of(fileName));
-            instructions = MiniMacParser.parse(programString);
-        } catch (Exception e) {
-            System.out.println("Parsing error: " + e.getMessage());
-            return;
-        }
-
-        mac.execute(instructions);
-        mac.printMemory();
     }
 }
 
