@@ -15,7 +15,7 @@ public class MiniMacComponent extends JComponent {
         setLayout(new GridLayout(2, 1));
 
         memoryModel = new DefaultListModel<>();
-        updateLists(mac);
+        updateMemory(mac);
         memory = new JList<>(memoryModel);
 
         instructionModel = new DefaultListModel<>();
@@ -25,16 +25,18 @@ public class MiniMacComponent extends JComponent {
         add(new JScrollPane(instructions));
     }
 
-    public void updateLists(MiniMac mac) {
+    public void updateMemory(MiniMac mac) {
         memoryModel.clear();
         for (int i = 0; i < mac.memory.length; i++) {
             memoryModel.addElement("memory[" + i + "] = " + mac.memory[i]);
         }
-        if (mac.instructions != null) {
-            instructionModel.clear();
-            for (Instruction instr : mac.instructions) {
-                instructionModel.addElement(instr.toString());
-            }
+    }
+
+    public void updateInstructions(List<Instruction> instructions) {
+        instructionModel.clear();
+        if (instructions == null) return;
+        for (Instruction i : instructions) {
+            instructionModel.addElement(i.toString());
         }
     }
 

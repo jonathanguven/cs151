@@ -14,6 +14,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import static tools.Utilities.getFileName;
+
 public class AppPanel extends JPanel implements ActionListener {
     private MiniMac mac;
     private ControlPanel controls;
@@ -58,7 +60,7 @@ public class AppPanel extends JPanel implements ActionListener {
                         try {
                             String programString = Files.readString(Path.of(fileName.trim()));
                             mac.instructions = MiniMacParser.parse(programString);
-                            view.update();
+                            view.updateInstructions(mac.instructions);
                         } catch (java.nio.file.NoSuchFileException err) {
                             JOptionPane.showMessageDialog(this, "Program " + fileName + " doesn't exist", "Error", JOptionPane.ERROR_MESSAGE);
                         } catch (IOException err) {
@@ -83,6 +85,9 @@ public class AppPanel extends JPanel implements ActionListener {
 
                 case "Clear": {
                     mac.clear();
+                    if (mac.instructions != null) {
+                        mac.instructions.clear();
+                    }
                     view.update();
                     break;
                 }
@@ -114,19 +119,13 @@ public class AppPanel extends JPanel implements ActionListener {
                 }
 
                 case "Save": {
-                    String fName = Utilities.getFileName((String) null, false);
-                    ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(fName));
-                    os.writeObject(this.mac);
-                    os.close();
+                    save(mac, true);
                     break;
                 }
 
                 case "Open": {
-                    String fName = Utilities.getFileName((String) null, true);
-                    ObjectInputStream is = new ObjectInputStream(new FileInputStream(fName));
-                    MiniMac newMac = (MiniMac) is.readObject();
-                    is.close();
-                    view.setMac(newMac);
+                    mac = open(mac);
+                    view.setMac(mac, mac.instructions);
                     break;
                 }
 
@@ -143,6 +142,41 @@ public class AppPanel extends JPanel implements ActionListener {
         } catch (Exception ex) {
             Utilities.error(ex);
         }
+    }
+
+    public static void save(MiniMac model, Boolean saveAs) {
+        String fName = model.getFileName();
+        if (fName == null || saveAs) {
+            fName = getFileName(fName, false);
+            model.setFileName(fName);
+        }
+        try {
+            ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(fName));
+            model.setUnsavedChanges(false);
+            os.writeObject(model);
+            os.close();
+        } catch (Exception err) {
+            model.setUnsavedChanges(true);
+            Utilities.error(err);
+        }
+    }
+
+    public static MiniMac open(MiniMac model) {
+//        saveChanges(model);
+        String fName = getFileName(model.getFileName(), true);
+        MiniMac newModel = null;
+        try {
+            ObjectInputStream is = new ObjectInputStream(new FileInputStream(fName));
+            newModel = (MiniMac)is.readObject();
+            is.close();
+        } catch (Exception err) {
+            Utilities.error(err);
+        }
+        return newModel;
+    }
+
+    private static void saveChanges(MiniMac model) {
+        save(model, false);
     }
 
     class ControlPanel extends JPanel {
