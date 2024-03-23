@@ -14,7 +14,6 @@ public class MiniMac extends Publisher implements Serializable {
     boolean halt = false;
     int ip = 0;
     List<Instruction> instructions;
-    String fileName;
 
 //    Constructor
     public MiniMac() {
@@ -38,24 +37,6 @@ public class MiniMac extends Publisher implements Serializable {
         ip = 0;
         Arrays.fill(memory, 0);
         notifySubscribers();
-    }
-
-    public String getFileName() {
-        return fileName;
-    }
-
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
-
-    public void setUnsavedChanges(boolean b) {
-        try {
-            ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(fileName));
-            os.writeObject(this);
-            os.close();
-        } catch (Exception err) {
-            Utilities.error(err);
-        }
     }
 }
 
